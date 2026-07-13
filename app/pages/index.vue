@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import AppHeader from '~/components/AppHeader.vue';
+
+</script>
+
 <template>
-  <h1>Index page</h1>
+    <app-header />
 </template>
