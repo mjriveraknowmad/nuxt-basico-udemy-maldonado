@@ -4,7 +4,8 @@ import AppHeader from '~/components/AppHeader.vue';
 </script>
 
 <template>
-    <div>
-        Index
-    </div>
+  <div>
+    <app-header />
+    <slot />
+  </div>
 </template>
