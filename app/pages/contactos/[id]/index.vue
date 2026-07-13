@@ -16,7 +16,12 @@
 </template>
 
 <script setup lang="ts">
-
+definePageMeta({
+    validate(route) {
+        // Solo números enteros positivos, si no, se redirige a la página de error 404
+        return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
+    },
+})
 </script>
 
 <style scoped></style>
