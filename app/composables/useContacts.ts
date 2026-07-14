@@ -1,34 +1,39 @@
-export interface Contact {
-    id: number
-    name: string
-    email: string
-    phone: string
-    company: string
-    age: number
-    picture: string
-    gender: string
-    eyeColor: string
-    isActive: boolean
-    address: string
-}
+import type { Contact } from '~/stores/contactsStore'
+import { useContactsStore } from '~/stores/contactsStore'
+
+export { type Contact }
 
 export const useContacts = () => {
-    const { data: contacts, pending, error, refresh } = useFetch<Contact[]>(
-        'http://localhost:3001/contacts',
-        {
-            immediate: true,
+    const store = useContactsStore()
+    const fetchContacts = async () => {
+        store.pending = true
+        store.error = null
+        try {
+            const { data } = await useFetch<Contact[]>('http://localhost:3001/contacts')
+            console.log('Fetched contacts:', data.value)
+            store.addContacts(data.value || [])
+        } catch (err) {
+            store.error = err instanceof Error ? err : new Error('Error fetching contacts')
+        } finally {
+            store.pending = false
         }
-    )
-
-    // Ensure contacts is an array
-    if (!contacts.value) {
-        contacts.value = []
     }
-
+    
+    // Fetch contacts on first load
+    // onMounted(async () => {
+    //     await fetchContacts()
+    // })
+    
+    fetchContacts()
+    
     return {
-        contacts,
-        pending,
-        error,
-        refresh,
+        contacts: computed(() => store.contacts),
+        pending: computed(() => store.pending),
+        error: computed(() => store.error),
+        totalContacts: computed(() => store.totalContacts),
+        activeContacts: computed(() => store.activeContacts),
+        inactiveContacts: computed(() => store.inactiveContacts),
+        getContactById: store.getContactById,
     }
 }
+
