@@ -106,26 +106,9 @@
 </template>
 
 <script setup lang="ts">
-interface Contact {
-    id: number
-    name: string
-    email: string
-    phone: string
-    company: string
-    age: number
-    picture: string
-    gender: string
-    eyeColor: string
-    isActive: boolean
-    address: string
-}
-
 definePageMeta({
     layout: 'default',
 })
 
-const { data: contacts, pending, error } = await useFetch<Contact[]>('http://localhost:3001/contacts')
-
-// Ensure contacts is an array
-contacts.value = contacts.value || []
+const { contacts, pending, error } = useContacts()
 </script>
