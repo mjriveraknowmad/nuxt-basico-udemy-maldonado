@@ -9,9 +9,8 @@ export const useContacts = () => {
         store.pending = true
         store.error = null
         try {
-            const { data } = await useFetch<Contact[]>('http://localhost:3001/contacts')
-            console.log('Fetched contacts:', data.value)
-            store.addContacts(data.value || [])
+            const data = await $fetch<Contact[]>('http://localhost:3001/contacts')
+            store.addContacts(data || [])
         } catch (err) {
             store.error = err instanceof Error ? err : new Error('Error fetching contacts')
         } finally {
@@ -19,12 +18,10 @@ export const useContacts = () => {
         }
     }
     
-    // Fetch contacts on first load
-    // onMounted(async () => {
-    //     await fetchContacts()
-    // })
-    
-    fetchContacts()
+    // Fetch contacts only on client-side (prevents SSR hydration mismatch)
+    onMounted(async () => {
+        await fetchContacts()
+    })
     
     return {
         contacts: computed(() => store.contacts),
